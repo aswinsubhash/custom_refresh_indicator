@@ -40,7 +40,9 @@ class MyApp extends StatelessWidget {
 }
 
 class CustomRefreshIndicatorExample extends StatelessWidget {
-  const CustomRefreshIndicatorExample({super.key});
+   CustomRefreshIndicatorExample({super.key});
+
+  final ScrollController scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +54,8 @@ class CustomRefreshIndicatorExample extends StatelessWidget {
         onRefresh: () async {
           // Simulate a network call or data refresh
           await Future.delayed(Duration(seconds: 3));
+          scrollController.jumpTo(0);
+
         },
         builder: (BuildContext context, Widget child, IndicatorController controller) {
           return Stack(
@@ -59,25 +63,26 @@ class CustomRefreshIndicatorExample extends StatelessWidget {
             children: <Widget>[
               if (!controller.isIdle)
                 Positioned(
-                  top: 35.0 * controller.value,
+                  top: 30.0 * controller.value,
                   child: SizedBox(
-                    height: 30,
-                    width: 30,
+                    height: 25,
+                    width: 25,
                     child: CircularProgressIndicator(
-                      // value: !controller.isLoading ? controller.value.clamp(0.0, 1.0) : null,
+                      value: !controller.isLoading ? controller.value.clamp(0.0, 1.0) : null,
                     ),
                   ),
                 ),
               Transform.translate(
-                offset: Offset(0, 100.0 * controller.value),
+                offset: Offset(0, 80.0 * controller.value),
                 child: child,
               ),
             ],
           );
         },
         child: ListView.builder(
-          physics: AlwaysScrollableScrollPhysics(), // Ensures the list can always be scrolled
-          itemCount: 20,
+          physics:  AlwaysScrollableScrollPhysics(), // Ensures the list can always be scrolled
+          controller: scrollController,
+          itemCount: 50,
           itemBuilder: (context, index) => ListTile(
             title: Text('Item $index'),
           ),
